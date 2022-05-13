@@ -1,0 +1,171 @@
+Citire fisier csv:  ( pt string string double) 
+
+List<Particula>particule;
+
+try (var fisier = new BufferedReader(new FileReader("Portofolii\\particule.csv"))) {
+    particule = fisier.lines()
+            .map(linie -> new Particula(
+                    linie.split(",")[0],
+                    linie.split(",")[1],
+                    Double.parseDouble(linie.split(",")[2]))
+
+            )
+            .collect(Collectors.toList());
+}
+
+System.out.println(particule);
+
+
+
+
+
+Nr total de:
+System.out.println("Nr total produse: " + produse.size()); 
+
+
+Sortare:   
+Crescresc: dupa pret
+        camere.stream()
+//                .filter(Hotel::isEsteCurs)
+                .map(Hotel::getPret)
+                .distinct()
+                .sorted()
+                .forEach(disciplina -> System.out.println(disciplina));
+
+
+Sortare invers alfabetic dupa nume, avand pretul mai mare decat 13:
+// sortari
+System.out.println("sortari");
+incercari.stream()
+        .filter(incercare->incercare.getPret()>13)
+        .map(Incercare::getNume)
+        .distinct()
+        .sorted(Comparator.reverseOrder())
+        .forEach(incercare -> System.out.println(incercare));
+
+
+Lista produselor sortate alfabetic:
+produse.stream()
+        .sorted((p1, p2) -> p1.getDenumire().compareTo(p2.getDenumire()))
+        .forEach(p -> System.out.println(p.getDenumire()));
+
+
+
+
+Scirere din fisier csv in fisier dat:  
+
+try (var fisier = new DataOutputStream(
+        new FileOutputStream("dataOUT\\incercari.dat"))) {
+    fisier.writeInt(incercari.size());
+    for (var incercare : incercari) {
+        fisier.writeUTF(incercare.getNume());
+        fisier.writeUTF(incercare.getData());
+        fisier.writeInt(incercare.getNumar());
+        fisier.writeDouble(incercare.getPret());
+        fisier.writeFloat(incercare.getAltceva());
+    }
+}
+
+
+Citirea unui fisier binar dat dintr-un txt:
+System.out.println("citire / afișare fișier binar:");
+try (var fisier = new DataInputStream(
+        new FileInputStream("dataOUT\\incercari.dat"))) {
+    int n = fisier.readInt();
+    for (int i = 0; i < n; i++) {
+        System.out.printf("%s - %s - %d - %f - %f \n",
+                fisier.readUTF(),fisier.readUTF(),fisier.readInt(), fisier.readDouble(), fisier.readFloat());
+    }
+}
+
+
+
+Citire si afisare la consola HashMap:
+public static void main(String[] args) {
+
+    Map<String, Camera> camereHotel=new HashMap<>();
+    try(var file=new BufferedReader(new FileReader("Portofolii\\camereHotel.csv"))){
+        file.lines().forEach(
+                line->{
+                    System.out.println(line);
+                    String[] lineItems=line.split(",");
+                    camereHotel.put(lineItems[0], new Camera(
+                            lineItems[0],
+                            Integer.parseInt(lineItems[1]),
+                            Float.parseFloat(lineItems[2]),
+                            Integer.parseInt(lineItems[3])
+                    ));
+                }
+        );
+    } catch (FileNotFoundException e) {
+        e.printStackTrace();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    
+    
+    
+@Override
+public int compareTo(Incercare o) {
+    return Integer.compare(numar,o.numar);
+}
+
+
+////////
+///////////
+////////
+
+
+@Override
+public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Incercare)) return false;
+
+    Incercare incercare = (Incercare) o;
+
+    if (numar != incercare.numar) return false;
+    if (Double.compare(incercare.pret, pret) != 0) return false;
+    if (Float.compare(incercare.altceva, altceva) != 0) return false;
+    if (!nume.equals(incercare.nume)) return false;
+    return data.equals(incercare.data);
+}
+
+@Override
+public int hashCode() {
+    int result;
+    long temp;
+    result = nume.hashCode();
+    result = 31 * result + data.hashCode();
+    result = 31 * result + numar;
+    temp = Double.doubleToLongBits(pret);
+    result = 31 * result + (int) (temp ^ (temp >>> 32));
+    result = 31 * result + (altceva != +0.0f ? Float.floatToIntBits(altceva) : 0);
+    return result;
+}
+
+Incercare incercare1=new Incercare("Nou","04/10/2020",14,12.3,4.6f);
+Incercare incercare2=new Incercare("Nou","04/10/2020",17,12.3,4.6f);
+System.out.println(incercare1.equals(incercare2));
+
+
+
+
+record Car(String name, int price) {}
+
+class CompareByPrice implements Comparator<Car> {
+
+    @Override
+    public int compare(Car c1, Car c2) {
+
+        return c1.price() - c2.price();
+    }
+}
+
+class CompareByName implements Comparator<Car> {
+
+    @Override
+    public int compare(Car c1, Car c2) {
+
+        return c1.name().compareTo(c2.name());
+    }
+}
